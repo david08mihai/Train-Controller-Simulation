@@ -1,0 +1,43 @@
+    Tema cuprinde 3 fisiere .c si doua .h, astfel incat tema a fost mai facila din
+punct de vedere al organizarii. In fisierul "lists.h" sunt implementate toate
+functiile ce au legatura cu partea de tren, iar in "queue.c" tot ce tine de 
+coada folosita pentru a face un delay in execeutarea comenzilor. 
+    Pentru lista dublu inlantuita cu dublu santinela am ales ca denumire pentru
+structura de vagon, wagon, iar pentru fiecare vagon am ales denumirea "car". De
+asemenea, pentru tren am ales "train" - acesta contine, pe langa cele de baza, un contor pentru numarul de vagoane, iar, in unele cazuri, iter-ul ce se
+plimba dintr-un vagon in altul m-am gandit sa poarte denumirea de controlor, inspector in cazul codului meu. 
+In "lists.c", functiile au fost concepute in felul urmator:
+    -generate_car -> se aloca un spatiu de memorie, se pune simbolul ales si se initializeaza legaturile ce pointeaza catre NULL in prima faza, urmand a fi facute in cazul inserarii oricarui vagon
+    -init_train -> desi putea sa iasa mai frumos estetic daca era o functie de tip
+    "train *", am ales sa o fac in acest fel pentru a "jongla" si cu ideea de 
+    dublu pointer la o structura. Aici aloc memorie pentru structura, iar mai apoi initializez primul vagon deja cu '#', facand legaturile dintre acest vagon si santinela. Mai apoi, mecanicul va pointa catre primul vagon, iar lungimea trenului se seteaza la 1.
+    -move_left -> se muta mecanicul la stanga, iar in caz de e in primul
+    vagon, se va muta in ultimul
+    -move_right -> depinde de caz, daca mecanicul se afla in ultimul vagon, se creeaza unul nou si se muta la dreapta, daca nu, doar se muta mecanicul
+    -write -> se schimba simbolul vagonului aferent mecanicului
+    -clear_cell -> se sterge vagonul respectiv
+    -clear_all -> functia itereaza cu acel "inspector" de care ziceam, incepand cu al doilea vagon, pentru a sterge tot ce urmeaza dupa el, intrucat primul vagon nu are rost sa fie sters, ci doar sa ii fie schimbat simbolul, astfel fiind
+    readus in starea initiala(conform cerintei)
+    -show -> functia itereaza prin tren si afiseaza toate simbolurile, iar vagonul ce contine va afisa simbolul intre | |.
+    -show_current -> afiseaza doar mecanicul
+    -insert_left -> daca mecanicul se afla in primul vagon, va fi afisat "ERROR", in orice alt caz, se va insera un vagon cu ajutorul functiei "generate_car", se vor reface legaturile si se va incrementa lungimea trenului
+    -insert_right -> are aceeasi aplicabilitate ca insert_left
+    -search -> functia aloca un sir in mod dinamic pentru a copia fiecare simbol incepand cu cel al mecanicului. Evidenta lungimii din strcutura "train" a ajutat pentru
+    a alocat un numar necesar si suficient de caractere, pentru
+    a fi sigur ca nu sunt nici mai multe, nici mai putine. 
+    Dupa iteratia prin tren si copierea fiecarui vagon in sirul "aux", se face cautarea sirului primit ca parametru in sirul "aux". In caz de este gasit un match, pointer-ul p va pointa catre inceputul acestuia, iar in caz contrar, catre NULL. Mai apoi, pentru a pozitiona mecanicul pe pozitia de inceput a sirului, se scade pozitia pointerului cu cel al aux-ului. In final, se elibereaza sirul alocat dinamic.
+    -search_left -> functioneaza pe acelasi principiu ca search-ul normal, doar ca pentru a gasi pozitia unde trebuie pus mecanicul, iterez pana la santinela, folosind prev.
+    -search_right -> functioneaza ca celelalte doua, doar ca aici se opreste pana la santinela, folosind next
+    -execute -> functia primeste ca prarametru sirul din fisier si il "descompune" cu strtok, comparand cuvant cu cuvant. In functie de cuvantul pe care da match, se va parcurge si ce urmeaza, pentru a lua argumentul si a il folosi pentru functia respectiva.
+
+In "queue.c" :
+    -createnode -> aloca un nod nou in memorie cu ce comanda a fost furnizata in fisier
+    -add_queue -> adauga in coada, cu ajutorul functiei createnode, o noua comanda
+    -printq -> functie ce printeaza elementele din coada
+    -pop_queue -> o functie de tip char* ce returneaza sirul din primul element al cozii, ca mai apoi sa l elimine
+    -freeq -> functie pentru a elibera memoria odata terminata executia programului
+    -SWITCH -> am intors legaturile folosind un algoritm implementat si la lista simplu inlantuita, alegand trei pointeri care sa si pastrezeze pe rand, 3 noduri consecutive, in asa fel incat legaturile sa fie stabilite in mod corect. Mai apoi, se inverseaza si coada cu tail ul folosind metoda paharelor.
+    Intr-adevar, len-ul din coada nu a fost folosit, insa, in caz de o implementare ulterioara, acesta poate fi frcutificat.
+
+In "tema1.c" :
+    A fost declarat atat fisierul de intrare, cat si cel de iesire, iar mai apoi a fost citit numarul de comenzi de la tastatura. Intr-un for in care au fost cititie comenzile, cele de SHOW, SHOW_CURRENT si SWITCH au fost facute independente de celalalte, in strcmp-uri, deoarece produc efecte instante, iar orice alte comenzi sunt adaugate in coada, acolo unde, in caz de EXECUTE, se vor scoate din coada, iar sirul ce era in prima celula va fi dat ca argument pentru a fi regasit si a se apela functia aferenta. Mai apoi, se elibereaza memoria pentru tren si pentru coada, la fel si inchiderea fisierelor de in si out. 
